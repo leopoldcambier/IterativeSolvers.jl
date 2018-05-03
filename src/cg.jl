@@ -182,6 +182,7 @@ function cg!(x, A, b;
     history = ConvergenceHistory(partial = !log)
     history[:tol] = tol
     log && reserve!(history, :resnorm, maxiter + 1)
+    log && reserve!(history, :x,       maxiter + 1, length(x))
 
     # Actually perform CG
     iterable = cg_iterator!(x, A, b, Pl; tol = tol, maxiter = maxiter, kwargs...)
@@ -192,6 +193,7 @@ function cg!(x, A, b;
         if log
             nextiter!(history, mvps = 1)
             push!(history, :resnorm, iterable.residual)
+            push!(history, :x,       copy(iterable.x))
         end
         verbose && @printf("%3d\t%1.2e\n", iteration, iterable.residual)
     end

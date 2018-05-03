@@ -130,7 +130,7 @@ function push!(ch::ConvergenceHistory, key::Symbol, vec::Union{Vector,Tuple})
     iter = isa(ch,CompleteHistory) ? ch.iters : 1
     base = (iter-1)*width
     for i in 1:min(width,length(vec))
-        matrix[base+i] = vec[i]
+        matrix[iter,i] = vec[i]
     end
 end
 push!(ch::ConvergenceHistory, key::Symbol, data) = push_custom_data!(ch, key, data)
@@ -183,6 +183,7 @@ function _reserve!(typ::Type, ch::CompleteHistory, key::Symbol, len::Int)
 end
 function _reserve!(typ::Type, ch::CompleteHistory, key::Symbol, len::Int, size::Int)
     ch.data[key] = Matrix{typ}(len, size)
+    ch.data[key] = zeros(typ, (len, size))
 end
 
 """
